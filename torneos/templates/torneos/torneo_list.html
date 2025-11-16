@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="row">
+<div class="col-12 grid-margin stretch-card">
+<div class="card">
+    <div class="card-body row" >
+            <div class="col-8">
+                <h1 class="card-title" style="font-size: 20px;"><strong>TORNEOS</strong></h1>
+            </div>
+            
+            <div class="col-4" style="text-align: right;">
+                <button type="button" class="btn btn-success btn-fw" 
+                data-bs-toggle="modal" data-bs-target="#crearTorneoModal">Crear Torneo</button>
+             </div>
+    </div>
+</div>
+</div>
+
+<div class="col-12 grid-margin stretch-card">
+<div class="card">
+    <div class="card-body">  
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th><strong>Nombre</strong></th>
+            <th><strong>Fechas</strong></th>
+            <th><strong>Fechas Jugadas</strong></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for torneo in torneos %}
+        <tr>
+            <td>{{ torneo.nombre }}</td>
+            <td>{{ torneo.cantidad_fechas }}</td>
+            <td>{{ torneo.fechas_jugadas|default:0 }}</td>
+            <td>
+                <a href="#" style="margin: 5px;"><i class="fa fa-pencil"
+                    data-bs-toggle="modal" data-bs-target="#crearTorneoModal"
+                    data-url="{% url 'torneos:editar' torneo.pk %}"
+                    data-nombre="{{ torneo.nombre }}"
+                    data-cantidad_fechas="{{ torneo.cantidad_fechas }}"
+                    ></i></a>
+                <a href="" style="margin: 5px; color: red;"
+                data-bs-toggle="modal" data-bs-target="#confirmDeleteModal"
+                data-url="{% url 'torneos:eliminar' torneo.pk %}"
+                ><i class="fa fa-trash-o"></i></a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="3" style="text-align: center;">No hay torneos registrados.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Modal Crear/Editar -->
+<div class="modal fade" id="crearTorneoModal" tabindex="-1" aria-labelledby="crearTorneoModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="crearTorneoModalLabel">Crear Torneo</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="crearTorneoForm" method="post" action="{% url 'torneos:crear' %}">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label for="nombre" class="form-label">Nombre</label>
+            <input type="text" class="form-control" id="nombre" name="nombre" required>
+          </div>
+          <div class="mb-3">
+            <label for="cantidad_fechas" class="form-label">Cantidad de Fechas</label>
+            <input type="number" class="form-control" id="cantidad_fechas" name="cantidad_fechas" min="0" required>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="submit" form="crearTorneoForm" class="btn btn-success">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- Modal Confirmar Eliminación -->
+{% for torneo in torneos %}
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="confirmDeleteModalLabel">Confirmar Eliminación</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        ¿Estás seguro de que deseas eliminar este torneo?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <form id="deleteForm" method="post" action="{% url 'torneos:eliminar' torneo.id %}">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger">Eliminar</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %}
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'torneos/js/torneos.js' %}" defer></script>
+{% endblock %}

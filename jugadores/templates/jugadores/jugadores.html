@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block content %}
+<div class="row">
+<div class="col-12 grid-margin stretch-card">
+<div class="card">
+    <div class="card-body row" >
+            <div class="col-8">
+                <h1 class="card-title" style="font-size: 20px;"><strong>JUGADORES</strong></h1>
+            </div>
+            
+            <div class="col-4" style="text-align: right;">
+                <button type="button" class="btn btn-success btn-fw" 
+                data-bs-toggle="modal" data-bs-target="#crearJugadorModal">Crear Jugador</button>
+             </div>
+            
+    </div>
+    
+</div>
+</div>
+
+<div class="col-12 grid-margin stretch-card">
+<div class="card">
+    <div class="card-body">  
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th style="width: 30%;"><strong>Apellido</strong></th>
+            <th style="width: 25%;"><strong>Nombre</strong></th>          
+            <th style="width: 20%;"><strong>Categoría</strong></th>
+            <th style="width: 15%;"><strong>Handicap</strong></th>
+            <th style="width: 10%;"></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for jugador in jugadores %}
+        <tr>
+            <td>{{ jugador.apellido }}</td>
+            <td>{{ jugador.nombre }}</td>    
+            <td>{{ jugador.categoria }}</td>
+            <td>{{ jugador.handicap }}</td>
+            <td>
+                <a href="#" style="margin: 5px;"><i class="fa fa-pencil"
+                    data-bs-toggle="modal" data-bs-target="#crearJugadorModal"
+                    data-url="{% url 'jugadores:jugador-editar' jugador.pk %}"
+                    data-apellido="{{ jugador.apellido }}"
+                    data-nombre="{{ jugador.nombre }}"
+                    data-categoria="{{ jugador.categoria }}"
+                    data-handicap="{{ jugador.handicap }}"
+                    ></i></a>
+                <a href="" style="margin: 5px; color: red;"
+                data-bs-toggle="modal" data-bs-target="#confirmDeleteModal"
+                data-url="{% url 'jugadores:jugador-eliminar' jugador.pk %}"
+                ><i class="fa fa-trash-o"></i></a>
+                
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="5" style="text-align: center;">No hay jugadores registrados.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+
+
+  <!-- Modal -->
+  <div class="modal fade" id="crearJugadorModal" tabindex="-1" aria-labelledby="crearJugadorModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="crearJugadorModalLabel">Crear Jugador</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <!-- Formulario para crear jugador -->
+          <form id="crearJugadorForm" method="post" action="{% url 'jugadores:crear-jugador' %}">
+            {% csrf_token %}
+            <div class="mb-3">
+              <label for="nombre" class="form-label">Nombre</label>
+              <input type="text" class="form-control" id="nombre" name="nombre" required>
+            </div>
+            <div class="mb-3">
+              <label for="apellido" class="form-label">Apellido</label>
+              <input type="text" class="form-control" id="apellido" name="apellido" required>
+            </div>
+            <div class="mb-3">
+              <label for="categoria" class="form-label">Categoría</label>
+              <select class="form-select" id="categoria" name="categoria" required>
+                <option value="1ra">Primera</option>
+                <option value="2da">Segunda</option>
+                <option value="3ra">Tercera</option>
+                <option value="3raB">Tercera B</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="handicap" class="form-label">Handicap</label>
+              <input type="number" class="form-control" id="handicap" name="handicap" required>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" form="crearJugadorForm" class="btn btn-success" id="crearJugadorButton">Guardar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+ 
+  <!-- Modal de confirmación -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="confirmDeleteModalLabel">Confirmar Eliminación</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          ¿Estás seguro de que deseas eliminar a este jugador?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <!-- Botón para confirmar eliminación -->
+          <form id="deleteForm" method="post" action="">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Eliminar</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+
+{% endblock %}
+
+{% block extra_js %}
+
+<script src="{% static 'jugadores/js/jugadores.js' %}" defer></script>
+
+{% endblock %}
+
+
+  
