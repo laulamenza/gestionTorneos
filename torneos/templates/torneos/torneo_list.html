@@ -38,6 +38,9 @@
             <td>{{ torneo.cantidad_fechas }}</td>
             <td>{{ torneo.fechas_jugadas|default:0 }}</td>
             <td>
+                <a href="{% url 'torneos:detalle' torneo.pk %}" style="margin: 5px;">
+                <i class="fa fa-eye"></i> </a>
+
                 <a href="#" style="margin: 5px;"><i class="fa fa-pencil"
                     data-bs-toggle="modal" data-bs-target="#crearTorneoModal"
                     data-url="{% url 'torneos:editar' torneo.pk %}"

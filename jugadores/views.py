@@ -46,4 +46,29 @@ def editar_jugador(request, pk):
         jugador.save()
         return redirect('jugadores:lista')
 
+from django.shortcuts import render, get_object_or_404
+from django.db.models import Sum, Count
+from fechas.models import Participacion
+from .models import Jugador
+
+def detalle_jugador(request, pk):
+    jugador = get_object_or_404(Jugador, pk=pk)
+
+    participaciones = Participacion.objects.filter(jugador=jugador)
+
+    # estadísticas
+    total_fechas = participaciones.values('fecha').distinct().count()
+    fechas_ganadas = participaciones.filter(posicion=1).count()
+    total_puntos = participaciones.aggregate(Sum('puntaje'))['puntaje__sum'] or 0
+    promedio_puntos = total_puntos / total_fechas if total_fechas > 0 else 0
+
+    context = {
+        'jugador': jugador,
+        'total_fechas': total_fechas,
+        'fechas_ganadas': fechas_ganadas,
+        'total_puntos': total_puntos,
+        'promedio_puntos': promedio_puntos,
+        'participaciones': participaciones.order_by('fecha__numero'),
+    }
+    return render(request, 'jugadores/detalle_jugador.html', context)
 

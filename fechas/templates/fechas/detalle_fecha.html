@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row">
+  <div class="col-12 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <h3>Fecha {{ fecha.numero }} - {{ fecha.torneo.nombre }}</h3>
+        <p>Club organizador: {{ fecha.get_club_organizador_display }}</p>
+        <p>Fecha: {{ fecha.fecha }}</p>
+
+        <h4>Participaciones</h4>
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>Posición</th>
+              <th>Jugador</th>
+              <th>Puntaje</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for p in participaciones %}
+            <tr>
+              <td>{{ p.posicion }}</td>
+              <td>{{ p.jugador }}</td> 
+              <td>{{ p.puntaje }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="3" style="text-align:center;">No hay jugadores cargados.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+        <hr>
+        <h5>Agregar jugador</h5>
+        <form method="post">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label for="jugador" class="form-label">Jugador</label>
+            <select class="form-select" id="jugador" name="jugador" required>
+              {% for j in jugadores %}
+              <option value="{{ j.id }}">{{ j }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="puntaje" class="form-label">Puntaje</label>
+            <input type="number" class="form-control" id="puntaje" name="puntaje" required>
+          </div>
+          <button type="submit" class="btn btn-success">Agregar</button>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -8,8 +8,8 @@ class Torneo(models.Model):
     def __str__(self):
         return self.nombre
     
-    #def fechas_jugadas(self):
-    #return self.fechas.count()
+    def fechas_jugadas(self):
+        return self.fechas.count()
 
 
 class PuntajeTorneo(models.Model):

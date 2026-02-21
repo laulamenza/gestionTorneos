@@ -43,6 +43,8 @@
             <td>{{ jugador.categoria }}</td>
             <td>{{ jugador.handicap }}</td>
             <td>
+                <a href="{% url 'jugadores:detalle' jugador.pk %}" style="margin: 5px;">
+                   <i class="fa fa-eye"></i> </a>
                 <a href="#" style="margin: 5px;"><i class="fa fa-pencil"
                     data-bs-toggle="modal" data-bs-target="#crearJugadorModal"
                     data-url="{% url 'jugadores:jugador-editar' jugador.pk %}"

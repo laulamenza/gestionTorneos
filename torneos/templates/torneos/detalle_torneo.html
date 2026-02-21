@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="row">
+  <div class="col-12 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body row">
+        <div class="col-8">
+          <h1 class="card-title" style="font-size: 20px;">
+            <strong>{{ torneo.nombre }}</strong>
+          </h1>
+          <p>Fechas jugadas: {{ fechas_jugadas }}</p>
+        </div>
+        <div class="col-4" style="text-align: right;">
+          <button type="button" class="btn btn-success btn-fw"
+                  data-bs-toggle="modal" data-bs-target="#crearFechaModal">
+            Crear Fecha
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title">Tabla de Posiciones</h4>
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>Posición</th>
+              <th>Jugador</th>
+              <th>Categoría</th>
+              <th>Puntos</th>
+              <th>Fechas Jugadas</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for pos in posiciones %}
+            <tr>
+              <td>{{ forloop.counter }}</td>
+              <td>{{ pos.jugador__apellido }}, {{ pos.jugador__nombre }}</td>
+              <td>{{ pos.jugador__categoria }}</td>
+              <td>{{ pos.total_puntos }}</td>
+              <td>{{ pos.total_fechas }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="2" style="text-align: center;">No hay participaciones registradas.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="col-12 grid-margin stretch-card">
+  <div class="card">
+    <div class="card-body">
+      <h4 class="card-title">Fechas del Torneo</h4>
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>Número</th>
+            <th>Fecha</th>
+            <th>Club Organizador</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for f in fechas %}
+          <tr>
+            <td>{{ f.numero }}</td>
+            <td>{{ f.fecha }}</td>
+            <td>{{ f.get_club_organizador_display }}</td>
+            <td>
+              <a href="{% url 'fechas:detalle' f.pk %}" style="margin: 5px;">
+                <i class="fa fa-eye"></i>
+              </a>
+              
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="4" style="text-align:center;">No hay fechas registradas.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal Crear Fecha -->
+<div class="modal fade" id="crearFechaModal" tabindex="-1" aria-labelledby="crearFechaModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="crearFechaModalLabel">Crear Fecha</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <form id="crearFechaForm" method="post" action="{% url 'fechas:crear' torneo.pk %}">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label for="numero" class="form-label">Número de Fecha</label>
+            <input type="number" class="form-control" id="numero" name="numero" required readonly value="{{ proxima_fecha }}">
+          </div>
+          <div class="mb-3">
+            <label for="fecha" class="form-label">Fecha</label>
+            <input type="date" class="form-control" id="fecha" name="fecha" required>
+          </div>
+          <div class="mb-3">
+                <label for="club_organizador" class="form-label">Club Organizador</label>
+                <select class="form-select" id="club_organizador" name="club_organizador" required>
+                    {% for value,label in clubes %}
+                        <option value="{{ value }}">{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="submit" form="crearFechaForm" class="btn btn-success">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
