@@ -4,25 +4,25 @@
   <div class="col-12 grid-margin stretch-card">
     <div class="card">
       <div class="card-body">
-        <h3>Fecha {{ fecha.numero }} - {{ fecha.torneo.nombre }}</h3>
-        <p>Club organizador: {{ fecha.get_club_organizador_display }}</p>
-        <p>Fecha: {{ fecha.fecha }}</p>
+        <h3><strong>Fecha {{ fecha.numero }} - {{ fecha.torneo.nombre }}</strong></h3>
+        <h5><strong>Club organizador: {{ fecha.get_club_organizador_display }}</strong></h5>
+        <h5><strong>Fecha: {{ fecha.fecha|date:"d/m/Y" }}</strong></h5>
 
-        <h4>Participaciones</h4>
+        <h4>Posiciones de la fecha</h4>
         <table class="table table-hover">
           <thead>
             <tr>
-              <th>Posición</th>
-              <th>Jugador</th>
-              <th>Puntaje</th>
+              <th><strong>Posición</strong></th>
+              <th><strong>Jugador</strong></th>
+              <th><strong>Puntaje</strong></th>
             </tr>
           </thead>
           <tbody>
             {% for p in participaciones %}
             <tr>
-              <td>{{ p.posicion }}</td>
-              <td>{{ p.jugador }}</td> 
-              <td>{{ p.puntaje }}</td>
+              <td style="color: #000; font-weight: bold;">{{ p.posicion }}</td>
+              <td style="color: #000; font-weight: bold;">{{ p.jugador }}</td> 
+              <td style="color: #000; font-weight: bold;">{{ p.puntaje }}</td>
             </tr>
             {% empty %}
             <tr>

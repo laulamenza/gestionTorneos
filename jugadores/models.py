@@ -18,4 +18,4 @@ class Jugador(models.Model):
     handicap = models.IntegerField()
 
     def __str__(self):
-        return f"{self.nombre} {self.apellido} - {self.categoria}"
+        return f"{self.apellido} {self.nombre} - {self.categoria}"
